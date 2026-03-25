@@ -7,7 +7,8 @@ export default function ScoreColumn({ frameIndex }) {
     const scoreDisplay = getScoreDisplay(frameIndex, rollsForCurrentFrame, calculateScore);
 
     return (
-        <td className="border border-black px-0.5 py-0.5 text-center font-bold text-xs">
+        <td className="border border-black px-0.5 py-0.5 text-center font-bold text-xs"
+            aria-label={`Frame ${frameIndex + 1} score`}>
             {scoreDisplay}
         </td>
     );

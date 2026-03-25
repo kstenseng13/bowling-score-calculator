@@ -98,7 +98,7 @@ export default function Home() {
   }), [rolls, activeCell, handleRollChange, handleRollClick, isRollInvalid, calculateScore, total]);
 
   return (
-    <div className="p-5 font-sans">
+    <main className="p-5 font-sans">
       <h1 className="text-center text-3xl font-bold mb-5">Bowling Score Calculator</h1>
       <ScoringContext.Provider value={contextValue}>
         <ScoreCard />
@@ -108,6 +108,6 @@ export default function Home() {
           Reset
         </button>
       </div>
-    </div>
+    </main>
   );
 }

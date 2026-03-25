@@ -8,6 +8,7 @@ function RollInputElement({ frameIndex, rollIndex, isTenthFrame }) {
     const displayValue = getRollDisplay(rollIndex, rollsForCurrentFrame, isTenthFrame);
     const isActive = activeCell === createCellKey(frameIndex, rollIndex);
     const isInvalid = isRollInvalid?.(frameIndex, rollIndex);
+    const rollLabel = `Frame ${frameIndex + 1}, Roll ${rollIndex + 1}`;
 
     const handleInput = (e) => {
         const input = e.target.value.toUpperCase();
@@ -18,9 +19,9 @@ function RollInputElement({ frameIndex, rollIndex, isTenthFrame }) {
     };
 
     return (
-        <input type="text" maxLength="1"
+        <input type="text" maxLength="1" aria-label={rollLabel} id={rollLabel} aria-invalid={isInvalid || undefined}
             value={displayValue ?? ""} className={getInputClassName(isInvalid, isActive)}
-            onChange={handleInput} onFocus={() => onRollClick(frameIndex, rollIndex)} onBlur={() => onRollClick(null)}/>
+            onChange={handleInput} onFocus={() => onRollClick(frameIndex, rollIndex)} onBlur={() => onRollClick(null)} />
     );
 }
 
