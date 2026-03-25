@@ -1,65 +1,113 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useMemo, useCallback } from "react";
+import { useScoring } from "./hooks/useScoring";
+import ScoreCard from "./components/ScoreCard";
+import { createCellKey } from "./lib/constants";
+import { ScoringContext } from "./context/ScoringContext";
 
 export default function Home() {
+  // Initialize empty rolls array, active cell, and scoring logic.
+  const initialRolls = Array.from({ length: 10 }, (_, i) => i === 9 ? [null, null, null] : [null, null]);
+  const [rolls, setRolls] = useState(initialRolls);
+  const [activeCell, setActiveCell] = useState(null); // Null means no cell is active.
+  const { calculateScore, calculateTotal } = useScoring(rolls);
+
+  const isRollInvalid = useCallback((frameIndex, rollIndex) => {
+    const rollsForCurrentFrame = rolls[frameIndex];
+    const isTenthFrame = frameIndex === 9;
+    const firstRoll = rollsForCurrentFrame[0];
+    const secondRoll = rollsForCurrentFrame[1];
+
+    if (!isTenthFrame && rollIndex === 1) {
+      if (firstRoll !== 0 && secondRoll === 10) {
+        return true;
+      }
+      if (firstRoll !== null && secondRoll !== null && firstRoll + secondRoll > 10) {
+        return true;
+      }
+      return false;
+    }
+
+    if (isTenthFrame && rollIndex === 1) {
+      return (firstRoll !== 10 && firstRoll !== null && secondRoll !== null && firstRoll + secondRoll > 10);
+    }
+
+    return false;
+  }, [rolls]);
+
+  const handleRollClick = useCallback((frameIndex, rollIndex) => {
+    if (frameIndex === null) {
+      setActiveCell(null);
+      return;
+    }
+    setActiveCell(createCellKey(frameIndex, rollIndex));
+  }, []);
+
+  // Function for handling input changes. It will convert user input (X, /, or 0-9) into numeric values.
+  // Just because I'm extra and I want this to look like a bowling alley program to some extent :)
+  const handleRollChange = useCallback((frameIndex, rollIndex, value) => {
+    let numValue = null;
+
+    if (value !== "") {
+      // Display X for strikes
+      if (value.toUpperCase() === "X") {
+        numValue = 10;
+      }
+      // Display / for spares
+      else if (value === "/") {
+        const firstRoll = rolls[frameIndex][0];
+        if (firstRoll !== null) {
+          numValue = 10 - firstRoll;
+        }
+      }
+      // Regular number input (0-9)
+      else {
+        numValue = Math.min(10, Math.max(0, Number.parseInt(value) || 0));
+      }
+    }
+
+    // Create a copy of rolls and update the specific roll value.
+    // This is done immutably to ensure React state updates correctly.
+    const newRolls = rolls.map((r, i) => i === frameIndex ? [...r] : r);
+    newRolls[frameIndex][rollIndex] = numValue;
+
+    // Automatically set the second roll to 0 if the first roll is a strike and it is not the 10th frame.
+    if (frameIndex < 9 && rollIndex === 0 && numValue === 10) {
+      newRolls[frameIndex][1] = 0;
+    }
+
+    setRolls(newRolls);
+  }, [rolls]);
+
+  const total = calculateTotal();
+
+  const handleReset = () => {
+    setRolls(initialRolls);
+    setActiveCell(null);
+  };
+
+  const contextValue = useMemo(() => ({
+    rolls,
+    activeCell,
+    onRollChange: handleRollChange,
+    onRollClick: handleRollClick,
+    isRollInvalid,
+    calculateScore,
+    total,
+  }), [rolls, activeCell, handleRollChange, handleRollClick, isRollInvalid, calculateScore, total]);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="p-5 font-sans">
+      <h1 className="text-center text-3xl font-bold mb-5">Bowling Score Calculator</h1>
+      <ScoringContext.Provider value={contextValue}>
+        <ScoreCard />
+      </ScoringContext.Provider>
+      <div className="text-center mt-6">
+        <button onClick={handleReset} className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors">
+          Reset
+        </button>
+      </div>
     </div>
   );
 }
