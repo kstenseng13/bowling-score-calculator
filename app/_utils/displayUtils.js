@@ -38,10 +38,10 @@ export function getScoreDisplay(frameIndex, rollsForCurrentFrame, calculateScore
 
 // Input styling based on validation and focus state.
 export function getInputClassName(isInvalid, isActive) {
-    const baseStyles = "w-9 h-5 p-0 text-xs text-center";
-    if (isInvalid) return `${baseStyles} border-2 border-red-500 bg-red-50`;
-    if (isActive) return `${baseStyles} border-2 border-blue-500 bg-blue-50`;
-    return `${baseStyles} border border-gray-300 bg-white`;
+    const baseStyles = "w-10 h-6 p-0 text-xs text-center";
+    if (isInvalid) return `${baseStyles} border-2 border-rose-500 bg-rose-50`;
+    if (isActive) return `${baseStyles} border-2 border-cyan-500 bg-cyan-50`;
+    return `${baseStyles} border-l border-taupe-300 bg-white`;
 }
 
 export function shouldShowSecondRoll(isTenthFrame, firstRoll) {

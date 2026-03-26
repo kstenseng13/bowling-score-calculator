@@ -8,6 +8,7 @@ function RollInputElement({ frameIndex, rollIndex, isTenthFrame }) {
     const displayValue = getRollDisplay(rollIndex, rollsForCurrentFrame, isTenthFrame);
     const isActive = activeCell === createCellKey(frameIndex, rollIndex);
     const isInvalid = isRollInvalid?.(frameIndex, rollIndex);
+    const rollLabel = `Frame ${frameIndex + 1}, Roll ${rollIndex + 1}`;
 
     const handleInput = (e) => {
         const input = e.target.value.toUpperCase();
@@ -18,9 +19,9 @@ function RollInputElement({ frameIndex, rollIndex, isTenthFrame }) {
     };
 
     return (
-        <input type="text" maxLength="1"
+        <input type="text" maxLength="1" aria-label={rollLabel} id={rollLabel} aria-invalid={isInvalid || undefined}
             value={displayValue ?? ""} className={getInputClassName(isInvalid, isActive)}
-            onChange={handleInput} onFocus={() => onRollClick(frameIndex, rollIndex)} onBlur={() => onRollClick(null)}/>
+            onChange={handleInput} onFocus={() => onRollClick(frameIndex, rollIndex)} onBlur={() => onRollClick(null)} />
     );
 }
 
@@ -29,8 +30,8 @@ export default function InputColumn({ frameIndex }) {
     const isTenthFrame = frameIndex === 9;
 
     return (
-        <td className="border border-black px-0.5 py-0.5 text-center text-xs">
-            <div className="flex flex-row gap-0.5 justify-center">
+        <td className="border border-black text-center text-xs">
+            <div className="flex flex-row  justify-center">
                 <RollInputElement frameIndex={frameIndex} rollIndex={0} isTenthFrame={isTenthFrame} />
 
                 {shouldShowSecondRoll(isTenthFrame, rollsForCurrentFrame[0]) && (
