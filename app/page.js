@@ -103,10 +103,33 @@ export default function Home() {
       <ScoringContext.Provider value={contextValue}>
         <ScoreCard />
       </ScoringContext.Provider>
-      <div className="text-center mt-6">
-        <button onClick={handleReset} className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors">
-          Reset
-        </button>
+
+      <div className="text-center mt-4 space-y-4">
+        <div className="inline-flex items-center gap-4 text-sm text-taupe-700">
+          <span className="font-mono bg-taupe-100 px-2 py-0.5 rounded">0-9</span> Pins
+          <span className="font-mono bg-taupe-100 px-2 py-0.5 rounded">X</span> Strike
+          <span className="font-mono bg-taupe-100 px-2 py-0.5 rounded">/</span> Spare
+        </div>
+
+        <details className="max-w-md mx-auto text-left text-sm text-taupe-700">
+          <summary className="cursor-pointer font-semibold text-center hover:text-cyan-700 transition-colors">
+            How Bowling Scoring Works
+          </summary>
+          <ul className="mt-2 space-y-1.5 list-disc list-inside bg-white/80 rounded-lg p-4">
+            <li>A game has <strong>10 frames</strong>. Each frame gets up to 2 rolls to knock down 10 pins.</li>
+            <li><strong>Strike (X):</strong> All 10 pins on the first roll. Score = 10 + the next 2 rolls.</li>
+            <li><strong>Spare (/):</strong> All remaining pins on the second roll. Score = 10 + the next 1 roll.</li>
+            <li><strong>Open frame:</strong> Score = total pins knocked down in that frame.</li>
+            <li><strong>10th frame:</strong> Bonus rolls are awarded for strikes and spares — up to 3 rolls total.</li>
+            <li><strong>Perfect game:</strong> 12 strikes in a row = 300 points.</li>
+          </ul>
+        </details>
+
+        <div>
+          <button onClick={handleReset} className="px-6 py-2 bg-cyan-600 text-white font-semibold rounded-lg hover:bg-cyan-700 transition-colors">
+            Reset
+          </button>
+        </div>
       </div>
     </main>
   );

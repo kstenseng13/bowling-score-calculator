@@ -30,8 +30,8 @@ export default function InputColumn({ frameIndex }) {
     const isTenthFrame = frameIndex === 9;
 
     return (
-        <td className="border border-black px-0.5 py-0.5 text-center text-xs">
-            <div className="flex flex-row gap-0.5 justify-center">
+        <td className="border border-black text-center text-xs">
+            <div className="flex flex-row  justify-center">
                 <RollInputElement frameIndex={frameIndex} rollIndex={0} isTenthFrame={isTenthFrame} />
 
                 {shouldShowSecondRoll(isTenthFrame, rollsForCurrentFrame[0]) && (

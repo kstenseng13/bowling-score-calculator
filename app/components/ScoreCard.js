@@ -6,7 +6,7 @@ export default function ScoreCard() {
     const { total } = useScoringContext();
     return (
         <div className="overflow-x-auto py-5 flex justify-center">
-            <table className="border-collapse border-2 inline-block" aria-label="Bowling Scorecard">
+            <table className="border-collapse border-2 inline-block bg-taupe-200" aria-label="Bowling Scorecard">
                 <thead>
                     <tr>
                         {Array.from({ length: 10 }, (_, i) => i).map((frameIndex) => (
