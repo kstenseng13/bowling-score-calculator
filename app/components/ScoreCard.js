@@ -5,8 +5,8 @@ import { useScoringContext } from "../hooks/useScoringContext";
 export default function ScoreCard() {
     const { total } = useScoringContext();
     return (
-        <div className="overflow-x-auto py-5 flex justify-center">
-            <table className="border-collapse border-2 inline-block bg-taupe-200" aria-label="Bowling Scorecard">
+        <div className="py-5 overflow-x-auto text-center">
+            <table className="border-collapse border-2 bg-taupe-200 mx-auto" aria-label="Bowling Scorecard">
                 <thead>
                     <tr>
                         {Array.from({ length: 10 }, (_, i) => i).map((frameIndex) => (
